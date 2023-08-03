@@ -24,9 +24,9 @@ Cycle activates when the binding is pressed and always stays active. When the bi
 
 **Offset Y:** The amount in pixels to offset the cursor's Y position by.
 
-**Width Multiplier:** In absolute mode, the multiplier to increase the monitor area's width by. In relative mode, the multiplier to increase the X sensitivity by.
+**Width Multiplier:** In absolute mode, the multiplier to change the monitor area's width by. In relative mode, the multiplier to change the X sensitivity by.
 
-**Height Mutiplier:** In absolute mode, the multiplier to increase the monitor area's height by. In relative mode, the multiplier to increase the Y sensitivity by.
+**Height Mutiplier:** In absolute mode, the multiplier to change the monitor area's height by. In relative mode, the multiplier to change the Y sensitivity by.
 
 ## Cycle Mode
 

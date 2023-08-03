@@ -9,14 +9,45 @@ using System.Collections.Generic;
 
 namespace monitor_toggle;
 
-[PluginName("Monitor Toggle Offset")]
-public sealed class monitor_toggle_offset : monitor_toggle_base
+[PluginName("Monitor Toggle")]
+public sealed class monitor_toggle : monitor_toggle_base
 {
     public override event Action<IDeviceReport> Emit;
 
+    private ITabletReport absolute_mode(ref ITabletReport report) {
+        if (monitor_toggle_binding.is_active) {
+            report.Position = from_unit_screen(to_unit_screen(report.Position + monitor_toggle_binding.offset, monitor_toggle_binding.offset) * monitor_toggle_binding.multiplier, monitor_toggle_binding.offset);
+        }
+        return report;
+    }
+
+    private Vector2 current_offset = new Vector2();
+    private bool last_is_active = false;
+
+    private ITabletReport relative_mode(ref ITabletReport report) {
+        if (current_offset != monitor_toggle_binding.offset && monitor_toggle_binding.is_active) {
+            report.Position = report.Position + (monitor_toggle_binding.offset - current_offset);
+            current_offset = monitor_toggle_binding.offset;
+        } else if (monitor_toggle_binding.is_active != last_is_active) {
+            report.Position = report.Position - current_offset;
+            current_offset = new Vector2();
+        }
+        last_is_active = monitor_toggle_binding.is_active;
+
+        if (monitor_toggle_binding.is_active) {
+            report.Position = report.Position * monitor_toggle_binding.multiplier;
+        }
+        return report;
+    }
+
     public override void Consume(IDeviceReport value) {
-        if (value is ITabletReport report && monitor_toggle_offset_binding.is_active) {
-            report.Position = from_unit_screen(to_unit_screen(report.Position + monitor_toggle_offset_binding.offset, monitor_toggle_offset_binding.offset) * monitor_toggle_offset_binding.multiplier, monitor_toggle_offset_binding.offset);
+        if (value is ITabletReport report) {
+            OutputModeType output_mode = get_output_mode();
+            if (output_mode == OutputModeType.absolute) {
+                absolute_mode(ref report);
+            } else if (output_mode == OutputModeType.relative) {
+                relative_mode(ref report);
+            }
             value = report;
         }
 
@@ -26,8 +57,8 @@ public sealed class monitor_toggle_offset : monitor_toggle_base
     public override PipelinePosition Position => PipelinePosition.PostTransform;
 }
 
-[PluginName("Monitor Toggle Offset")]
-public sealed class monitor_toggle_offset_binding : IStateBinding
+[PluginName("Monitor Toggle")]
+public sealed class monitor_toggle_binding : IStateBinding
 {
     internal static bool is_active { set; get; }
     internal static Vector2 offset = new Vector2();
@@ -55,8 +86,17 @@ public sealed class monitor_toggle_offset_binding : IStateBinding
     public string height_multiplier { set; get; }
 
     public void Press(TabletReference tablet, IDeviceReport report) {
-        Vector2[] new_offset_array = to_vector2_array(offset_x, offset_y);
-        Vector2[] new_multiplier_array = to_vector2_array(width_multiplier, height_multiplier);
+        Vector2[] new_offset_array;
+        Vector2[] new_multiplier_array;
+
+        try {
+            new_offset_array = to_vector2_array(offset_x, offset_y);
+            new_multiplier_array = to_vector2_array(width_multiplier, height_multiplier);
+        } catch (Exception exception) {
+            Log.Exception(exception);
+            Log.WriteNotify("Monitor Toggle", "Error parsing binding settings. Offset X: " + offset_x + ", Offset Y: " + offset_y + ", Width Multiplier: " + width_multiplier + ", Height Multiplier: " + height_multiplier, LogLevel.Error);
+            return;
+        }
 
         if (!new_offset_array.SequenceEqual(offset_array) || !new_multiplier_array.SequenceEqual(multiplier_array) || mode == "Cycle") {
             offset_array = new_offset_array;

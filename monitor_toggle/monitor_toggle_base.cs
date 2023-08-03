@@ -10,6 +10,11 @@ using System.Numerics;
 namespace monitor_toggle;
 public abstract class monitor_toggle_base : IPositionedPipelineElement<IDeviceReport>
 {
+    public OutputModeType get_output_mode() {
+        try_resolve_output_mode();
+        return output_mode_type;
+    }
+
     public Vector2 to_unit_screen(Vector2 input, Vector2 active_offset)
     {
         if (output_mode_type == OutputModeType.absolute && absolute_output_mode != null)
@@ -80,7 +85,7 @@ public abstract class monitor_toggle_base : IPositionedPipelineElement<IDeviceRe
     public abstract PipelinePosition Position { get; }
 }
 
-enum OutputModeType {
+public enum OutputModeType {
     absolute,
     relative,
     unknown

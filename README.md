@@ -18,7 +18,7 @@ Toggle activates when the binding is pressed and deactivates when the binding is
 
 Hold activates when the binding is pressed and deactivates when the binding is released.
 
-Cycle activates when the binding is pressed and always stays active. When the binding is pressed again it changes to the next setting. Specify multiple settings for cycle mode by separating them with a comma. See [Cycle Mode](./README.md#cycle-mode) for setup instructions.
+Cycle activates when the binding is pressed and always stays active. When the binding is pressed again it changes to the next setting. Specify multiple settings for cycle mode by separating them with a comma. See [Cycle Mode](#cycle-mode) for setup instructions.
 
 **Offset X:** The amount in pixels to offset the cursor's X position by.
 

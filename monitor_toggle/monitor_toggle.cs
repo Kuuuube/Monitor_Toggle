@@ -70,19 +70,30 @@ public sealed class monitor_toggle_binding : IStateBinding
 
     public static string[] valid_modes => new[] { "Toggle", "Hold", "Cycle" };
 
-    [Property("Mode"), PropertyValidated(nameof(valid_modes)), DefaultPropertyValue("Toggle")]
+    [Property("Mode"), PropertyValidated(nameof(valid_modes)), DefaultPropertyValue("Toggle"), ToolTip
+            ("The monitor switching mode to use. Toggle, Hold, or Cycle.\n" +
+            "Toggle activates when the binding is pressed and deactivates when the binding is pressed a second time.\n" +
+            "Hold activates when the binding is pressed and deactivates when the binding is released.\n" +
+            "Cycle activates when the binding is pressed and always stays active. When the binding is pressed again it changes to the next setting.\n" +
+            "Specify multiple settings for cycle mode by separating them with a comma.")]
     public string mode { set; get; }
 
-    [Property("Offset X"), DefaultPropertyValue("0"), Unit("px")]
+    [Property("Offset X"), DefaultPropertyValue("0"), Unit("px"), ToolTip
+            ("The amount in pixels to offset the cursor's X position by.")]
     public string offset_x { set; get; }
 
-    [Property("Offset Y"), DefaultPropertyValue("0"), Unit("px")]
+    [Property("Offset Y"), DefaultPropertyValue("0"), Unit("px"), ToolTip
+            ("The amount in pixels to offset the cursor's Y position by.")]
     public string offset_y { set; get; }
 
-    [Property("Width Multiplier"), DefaultPropertyValue("1")]
+    [Property("Width Multiplier"), DefaultPropertyValue("1"), ToolTip
+            ("In absolute mode, the multiplier to increase the monitor area's width by.\n" +
+            "In relative mode, the multiplier to increase the X sensitivity by.")]
     public string width_multiplier { set; get; }
 
-    [Property("Height Mutiplier"), DefaultPropertyValue("1")]
+    [Property("Height Mutiplier"), DefaultPropertyValue("1"), ToolTip
+            ("In absolute mode, the multiplier to increase the monitor area's height by.\n" +
+            "In relative mode, the multiplier to increase the Y sensitivity by.")]
     public string height_multiplier { set; get; }
 
     public void Press(TabletReference tablet, IDeviceReport report) {

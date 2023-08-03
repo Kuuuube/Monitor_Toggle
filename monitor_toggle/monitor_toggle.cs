@@ -14,7 +14,7 @@ public sealed class monitor_toggle : monitor_toggle_base
 {
     public override event Action<IDeviceReport> Emit;
 
-    private ITabletReport absolute_mode(ref ITabletReport report) {
+    private ITabletReport absolute_mode(ITabletReport report) {
         if (monitor_toggle_binding.is_active) {
             report.Position = from_unit_screen(to_unit_screen(report.Position + monitor_toggle_binding.offset, monitor_toggle_binding.offset) * monitor_toggle_binding.multiplier, monitor_toggle_binding.offset);
         }
@@ -24,7 +24,7 @@ public sealed class monitor_toggle : monitor_toggle_base
     private Vector2 current_offset = new Vector2();
     private bool last_is_active = false;
 
-    private ITabletReport relative_mode(ref ITabletReport report) {
+    private ITabletReport relative_mode(ITabletReport report) {
         if (current_offset != monitor_toggle_binding.offset && monitor_toggle_binding.is_active) {
             report.Position = report.Position + (monitor_toggle_binding.offset - current_offset);
             current_offset = monitor_toggle_binding.offset;
@@ -44,9 +44,9 @@ public sealed class monitor_toggle : monitor_toggle_base
         if (value is ITabletReport report) {
             OutputModeType output_mode = get_output_mode();
             if (output_mode == OutputModeType.absolute) {
-                absolute_mode(ref report);
+                report = absolute_mode(report);
             } else if (output_mode == OutputModeType.relative) {
-                relative_mode(ref report);
+                report = relative_mode(report);
             }
             value = report;
         }

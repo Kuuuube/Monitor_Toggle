@@ -73,10 +73,10 @@ public sealed class monitor_toggle_binding : IStateBinding
     [Property("Mode"), PropertyValidated(nameof(valid_modes)), DefaultPropertyValue("Toggle")]
     public string mode { set; get; }
 
-    [Property("Offset X"), DefaultPropertyValue("0")]
+    [Property("Offset X"), DefaultPropertyValue("0"), Unit("px")]
     public string offset_x { set; get; }
 
-    [Property("Offset Y"), DefaultPropertyValue("0")]
+    [Property("Offset Y"), DefaultPropertyValue("0"), Unit("px")]
     public string offset_y { set; get; }
 
     [Property("Width Multiplier"), DefaultPropertyValue("1")]

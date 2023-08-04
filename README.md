@@ -26,7 +26,7 @@ Cycle activates when the binding is pressed and always stays active. When the bi
 
 **Width Multiplier:** In absolute mode, the multiplier to change the monitor area's width by. In relative mode, the multiplier to change the X sensitivity by.
 
-**Height Mutiplier:** In absolute mode, the multiplier to change the monitor area's height by. In relative mode, the multiplier to change the Y sensitivity by.
+**Height Multiplier:** In absolute mode, the multiplier to change the monitor area's height by. In relative mode, the multiplier to change the Y sensitivity by.
 
 ## Cycle Mode
 

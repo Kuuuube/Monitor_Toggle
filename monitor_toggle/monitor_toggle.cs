@@ -91,7 +91,7 @@ public sealed class monitor_toggle_binding : IStateBinding
             "In relative mode, the multiplier to increase the X sensitivity by.")]
     public string width_multiplier { set; get; }
 
-    [Property("Height Mutiplier"), DefaultPropertyValue("1"), ToolTip
+    [Property("Height Multiplier"), DefaultPropertyValue("1"), ToolTip
             ("In absolute mode, the multiplier to increase the monitor area's height by.\n" +
             "In relative mode, the multiplier to increase the Y sensitivity by.")]
     public string height_multiplier { set; get; }

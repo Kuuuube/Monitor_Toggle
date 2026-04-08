@@ -36,4 +36,7 @@ For example, the following settings will cycle between (0,0) offset and (1,1) mu
 
 All values must be filled for each part of the cycle. Note that even though Offset Y, Width Multiplier, and Height Multiplier do not change, they are still included three times.
 
+> [!WARNING]
+> When specifying decimal values, only use `.` as a separator. Do not use `,`. (`0.1`, `1.7`, `123.123`, etc)
+
 ![](./cycle_example.png)

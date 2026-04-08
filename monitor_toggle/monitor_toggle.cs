@@ -6,6 +6,7 @@ using System.Numerics;
 using OpenTabletDriver.Plugin;
 using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace monitor_toggle;
 
@@ -132,8 +133,9 @@ public sealed class monitor_toggle_binding : IStateBinding
     }
 
     private Vector2[] to_vector2_array(string input_string_1, string input_string_2) {
-        float[] x_array = input_string_1.Split(',').Select(str => float.Parse(str.Trim())).ToArray();
-        float[] y_array = input_string_2.Split(',').Select(str => float.Parse(str.Trim())).ToArray();
+        // `CultureInfo.InvariantCulture` MUST be included to ensure decimal separators are parsed with `.` instead of `,`
+        float[] x_array = input_string_1.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
+        float[] y_array = input_string_2.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
 
         List<Vector2> temp_list = new List<Vector2> {};
         foreach (var element in x_array.Zip(y_array, (x, y) => new {x = x, y = y})) {

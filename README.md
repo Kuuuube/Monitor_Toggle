@@ -12,6 +12,9 @@ Bindings for switching between monitors.
 
 ## Binding Settings
 
+> [!WARNING]
+> When specifying decimal values, only use `.` as a separator. Do not use `,`. (`0.1`, `1.7`, `123.123`, etc)
+
 **Mode:** The monitor switching mode to use. Toggle, Hold, or Cycle.
 
 Toggle activates when the binding is pressed and deactivates when the binding is pressed a second time.
@@ -35,9 +38,6 @@ Cycle mode should be used with multiple sets of settings for each value. The val
 For example, the following settings will cycle between (0,0) offset and (1,1) multiplier, (1920, 0) offset and (1,1) multiplier, (3840, 0) offset and (1,1) multiplier. It will then loop back to to (0,0) offset and (1,1) multiplier.
 
 All values must be filled for each part of the cycle. Note that even though Offset Y, Width Multiplier, and Height Multiplier do not change, they are still included three times.
-
-> [!WARNING]
-> When specifying decimal values, only use `.` as a separator. Do not use `,`. (`0.1`, `1.7`, `123.123`, etc)
 
 ![](./cycle_example.png)
 

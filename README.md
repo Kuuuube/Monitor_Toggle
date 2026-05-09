@@ -40,3 +40,23 @@ All values must be filled for each part of the cycle. Note that even though Offs
 > When specifying decimal values, only use `.` as a separator. Do not use `,`. (`0.1`, `1.7`, `123.123`, etc)
 
 ![](./cycle_example.png)
+
+## Calculating Offsets and Multipliers
+
+- In the OTD `Output` tab, right click the `Display` area, go to `Set to display`, and select one of the displays you need to toggle to. Note down the `Width`, `Height`, `X`, and `Y` shown by OTD.
+
+    Repeat this step for all monitors you need to be able to switch to.
+
+- Set your display area to whatever you want to be the default. Note down these values too.
+
+- Calculate monitor toggle's values using the following formulas. `Default` will refer to the monitor you have set as default in the OTD display settings and `Toggle` will refer to the monitor being toggled to:
+
+    - `Offset X` = `Toggle_X - Default_X`
+
+    - `Offset Y` = `Toggle_Y - Default_Y`
+
+    - `Width Multiplier` = `Toggle_Width / Default_Width`
+
+    - `Height Multiplier` = `Toggle_Height / Default_Height`
+
+    If you are using a cycle bind, base ALL monitors off the same default.

@@ -10,7 +10,7 @@ namespace monitor_toggle;
 [PluginName("Monitor Toggle")]
 public sealed class MonitorToggle : MonitorToggleBase
 {
-    public override event Action<IDeviceReport> Emit;
+    public override event Action<IDeviceReport>? Emit;
 
     private ITabletReport AbsoluteMode(ITabletReport report)
     {

@@ -2,6 +2,7 @@
 using OpenTabletDriver.Plugin;
 using OpenTabletDriver.Plugin.DependencyInjection;
 using OpenTabletDriver.Plugin.Output;
+using OpenTabletDriver.Plugin.Platform.Display;
 using OpenTabletDriver.Plugin.Tablet;
 using System;
 using System.Linq;
@@ -56,15 +57,18 @@ public abstract class MonitorToggleBase : IPositionedPipelineElement<IDeviceRepo
     }
 
     [Resolved]
-    public IDriver driver;
+    public IVirtualScreen? VirtualScreen { set; get; }
+
+    [Resolved]
+    public IDriver? driver;
     private OutputModeType outputModeType;
-    private AbsoluteOutputMode absoluteOutputMode;
-    private RelativeOutputMode relativeOutputMode;
+    private AbsoluteOutputMode? absoluteOutputMode;
+    private RelativeOutputMode? relativeOutputMode;
     private void TryResolveOutputMode()
     {
         if (driver is Driver drv)
         {
-            IOutputMode output = drv.InputDevices
+            IOutputMode? output = drv.InputDevices
                 .Where(dev => dev?.OutputMode?.Elements?.Contains(this) ?? false)
                 .Select(dev => dev?.OutputMode).FirstOrDefault();
 

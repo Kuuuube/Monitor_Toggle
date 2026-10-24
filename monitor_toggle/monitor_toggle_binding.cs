@@ -10,109 +10,109 @@ using System;
 namespace monitor_toggle;
 
 [PluginName("Monitor Toggle")]
-public sealed class monitor_toggle_binding : IStateBinding
+public sealed class MonitorToggleBinding : IStateBinding
 {
-    internal static bool is_active { set; get; }
+    internal static bool IsActive { set; get; }
     internal static Vector2 offset = new();
     internal static Vector2 multiplier = new(1, 1);
 
-    int array_index = -1; //temp start value
-    internal static Vector2[] offset_array = new Vector2[] { };
-    internal static Vector2[] multiplier_array = new Vector2[] { };
+    int arrayIndex = -1; //temp start value
+    internal static Vector2[] offsetArray = new Vector2[] { };
+    internal static Vector2[] multiplierArray = new Vector2[] { };
 
-    public static string[] valid_modes => new[] { "Toggle", "Hold", "Cycle" };
+    public static string[] ValidModes => new[] { "Toggle", "Hold", "Cycle" };
 
-    [Property("Mode"), PropertyValidated(nameof(valid_modes)), DefaultPropertyValue("Toggle"), ToolTip
+    [Property("Mode"), PropertyValidated(nameof(ValidModes)), DefaultPropertyValue("Toggle"), ToolTip
             ("The monitor switching mode to use. Toggle, Hold, or Cycle.\n" +
             "Toggle activates when the binding is pressed and deactivates when the binding is pressed a second time.\n" +
             "Hold activates when the binding is pressed and deactivates when the binding is released.\n" +
             "Cycle activates when the binding is pressed and always stays active. When the binding is pressed again it changes to the next setting.\n" +
             "Specify multiple settings for cycle mode by separating them with a comma.")]
-    public string mode { set; get; }
+    public string Mode { set; get; }
 
     [Property("Offset X"), DefaultPropertyValue("0"), Unit("px"), ToolTip
             ("The amount in pixels to offset the cursor's X position by.")]
-    public string offset_x { set; get; }
+    public string OffsetX { set; get; }
 
     [Property("Offset Y"), DefaultPropertyValue("0"), Unit("px"), ToolTip
             ("The amount in pixels to offset the cursor's Y position by.")]
-    public string offset_y { set; get; }
+    public string OffsetY { set; get; }
 
     [Property("Width Multiplier"), DefaultPropertyValue("1"), ToolTip
             ("In absolute mode, the multiplier to increase the monitor area's width by.\n" +
             "In relative mode, the multiplier to increase the X sensitivity by.")]
-    public string width_multiplier { set; get; }
+    public string WidthMultiplier { set; get; }
 
     [Property("Height Multiplier"), DefaultPropertyValue("1"), ToolTip
             ("In absolute mode, the multiplier to increase the monitor area's height by.\n" +
             "In relative mode, the multiplier to increase the Y sensitivity by.")]
-    public string height_multiplier { set; get; }
+    public string HeightMultiplier { set; get; }
 
     public void Press(TabletReference tablet, IDeviceReport report)
     {
-        Vector2[] new_offset_array;
-        Vector2[] new_multiplier_array;
+        Vector2[] newOffsetArray;
+        Vector2[] newMultiplierArray;
 
         try
         {
-            new_offset_array = to_vector2_array(offset_x, offset_y);
-            new_multiplier_array = to_vector2_array(width_multiplier, height_multiplier);
+            newOffsetArray = ToVector2Array(OffsetX, OffsetY);
+            newMultiplierArray = ToVector2Array(WidthMultiplier, HeightMultiplier);
         }
         catch (Exception exception)
         {
             Log.Exception(exception);
-            Log.WriteNotify("Monitor Toggle", "Error parsing binding settings. Offset X: " + offset_x + ", Offset Y: " + offset_y + ", Width Multiplier: " + width_multiplier + ", Height Multiplier: " + height_multiplier, LogLevel.Error);
+            Log.WriteNotify("Monitor Toggle", "Error parsing binding settings. Offset X: " + OffsetX + ", Offset Y: " + OffsetY + ", Width Multiplier: " + WidthMultiplier + ", Height Multiplier: " + HeightMultiplier, LogLevel.Error);
             return;
         }
 
-        if (!new_offset_array.SequenceEqual(offset_array) || !new_multiplier_array.SequenceEqual(multiplier_array) || mode == "Cycle")
+        if (!newOffsetArray.SequenceEqual(offsetArray) || !newMultiplierArray.SequenceEqual(multiplierArray) || Mode == "Cycle")
         {
-            offset_array = new_offset_array;
-            multiplier_array = new_multiplier_array;
-            if (array_index + 1 >= offset_array.Length || array_index + 1 >= multiplier_array.Length || array_index == -1)
+            offsetArray = newOffsetArray;
+            multiplierArray = newMultiplierArray;
+            if (arrayIndex + 1 >= offsetArray.Length || arrayIndex + 1 >= multiplierArray.Length || arrayIndex == -1)
             {
-                array_index = 0;
+                arrayIndex = 0;
             }
-            else if (mode == "Cycle")
+            else if (Mode == "Cycle")
             {
-                array_index += 1;
+                arrayIndex += 1;
             }
-            offset = offset_array[array_index];
-            multiplier = multiplier_array[array_index];
+            offset = offsetArray[arrayIndex];
+            multiplier = multiplierArray[arrayIndex];
 
-            is_active = true;
+            IsActive = true;
             return;
         }
 
-        if (mode == "Toggle")
+        if (Mode == "Toggle")
         {
-            is_active = !is_active;
+            IsActive = !IsActive;
         }
-        else if (mode == "Hold")
+        else if (Mode == "Hold")
         {
-            is_active = true;
+            IsActive = true;
         }
     }
 
-    private Vector2[] to_vector2_array(string input_string_1, string input_string_2)
+    private Vector2[] ToVector2Array(string inputString1, string inputString2)
     {
         // `CultureInfo.InvariantCulture` MUST be included to ensure decimal separators are parsed with `.` instead of `,`
-        float[] x_array = input_string_1.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
-        float[] y_array = input_string_2.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
+        float[] xArray = inputString1.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
+        float[] yArray = inputString2.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
 
-        List<Vector2> temp_list = new() { };
-        foreach (var element in x_array.Zip(y_array, (x, y) => new { x = x, y = y }))
+        List<Vector2> tempList = new() { };
+        foreach (var element in xArray.Zip(yArray, (x, y) => new { x = x, y = y }))
         {
-            temp_list.Add(new Vector2(element.x, element.y));
+            tempList.Add(new Vector2(element.x, element.y));
         }
-        return temp_list.ToArray();
+        return tempList.ToArray();
     }
 
     public void Release(TabletReference tablet, IDeviceReport report)
     {
-        if (mode == "Hold")
+        if (Mode == "Hold")
         {
-            is_active = false;
+            IsActive = false;
         }
     }
 }

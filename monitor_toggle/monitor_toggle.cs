@@ -14,7 +14,7 @@ public sealed class MonitorToggle : MonitorToggleBase
 
     private ITabletReport AbsoluteMode(ITabletReport report)
     {
-        if (MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive)
+        if (MonitorToggleBinding.IsActive || MonitorToggleBindingSimple.IsActive)
         {
             var offset = GetOffset();
             var multiplier = GetMultiplier();
@@ -31,19 +31,19 @@ public sealed class MonitorToggle : MonitorToggleBase
     {
         var offset = GetOffset();
         var multiplier = GetMultiplier();
-        if (currentOffset != offset && (MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive))
+        if (currentOffset != offset && (MonitorToggleBinding.IsActive || MonitorToggleBindingSimple.IsActive))
         {
             report.Position += offset - currentOffset;
             currentOffset = offset;
         }
-        else if ((MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive) != lastIsActive)
+        else if ((MonitorToggleBinding.IsActive || MonitorToggleBindingSimple.IsActive) != lastIsActive)
         {
             report.Position -= currentOffset;
             currentOffset = new Vector2();
         }
-        lastIsActive = MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive;
+        lastIsActive = MonitorToggleBinding.IsActive || MonitorToggleBindingSimple.IsActive;
 
-        if (MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive)
+        if (MonitorToggleBinding.IsActive || MonitorToggleBindingSimple.IsActive)
         {
             report.Position *= multiplier;
         }
@@ -53,14 +53,14 @@ public sealed class MonitorToggle : MonitorToggleBase
     private Vector2 GetOffset()
     {
         if (MonitorToggleBinding.IsActive) return MonitorToggleBinding.offset;
-        if (MonitorToggleBindingAuto.IsActive) return MonitorToggleBindingAuto.offset;
+        if (MonitorToggleBindingSimple.IsActive) return MonitorToggleBindingSimple.offset;
         return new();
     }
 
     private Vector2 GetMultiplier()
     {
         if (MonitorToggleBinding.IsActive) return MonitorToggleBinding.multiplier;
-        if (MonitorToggleBindingAuto.IsActive) return MonitorToggleBindingAuto.multiplier;
+        if (MonitorToggleBindingSimple.IsActive) return MonitorToggleBindingSimple.multiplier;
         return new();
     }
 

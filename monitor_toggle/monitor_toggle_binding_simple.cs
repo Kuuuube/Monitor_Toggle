@@ -5,8 +5,8 @@ using OpenTabletDriver.Plugin.Tablet;
 
 namespace monitor_toggle;
 
-[PluginName("Monitor Toggle Auto")]
-public sealed class MonitorToggleBindingAuto : IStateBinding
+[PluginName("Monitor Toggle Simple")]
+public sealed class MonitorToggleBindingSimple : IStateBinding
 {
     internal static bool IsActive { set; get; }
     internal static Vector2 offset = new();

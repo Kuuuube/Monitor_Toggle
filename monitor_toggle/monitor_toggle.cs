@@ -21,26 +21,26 @@ public sealed class monitor_toggle : monitor_toggle_base
         return report;
     }
 
-    private Vector2 current_offset = new Vector2();
+    private Vector2 current_offset = new();
     private bool last_is_active = false;
 
     private ITabletReport relative_mode(ITabletReport report)
     {
         if (current_offset != monitor_toggle_binding.offset && monitor_toggle_binding.is_active)
         {
-            report.Position = report.Position + (monitor_toggle_binding.offset - current_offset);
+            report.Position += monitor_toggle_binding.offset - current_offset;
             current_offset = monitor_toggle_binding.offset;
         }
         else if (monitor_toggle_binding.is_active != last_is_active)
         {
-            report.Position = report.Position - current_offset;
+            report.Position -= current_offset;
             current_offset = new Vector2();
         }
         last_is_active = monitor_toggle_binding.is_active;
 
         if (monitor_toggle_binding.is_active)
         {
-            report.Position = report.Position * monitor_toggle_binding.multiplier;
+            report.Position *= monitor_toggle_binding.multiplier;
         }
         return report;
     }

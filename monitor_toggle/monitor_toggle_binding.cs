@@ -13,8 +13,8 @@ namespace monitor_toggle;
 public sealed class monitor_toggle_binding : IStateBinding
 {
     internal static bool is_active { set; get; }
-    internal static Vector2 offset = new Vector2();
-    internal static Vector2 multiplier = new Vector2(1, 1);
+    internal static Vector2 offset = new();
+    internal static Vector2 multiplier = new(1, 1);
 
     int array_index = -1; //temp start value
     internal static Vector2[] offset_array = new Vector2[] { };
@@ -100,7 +100,7 @@ public sealed class monitor_toggle_binding : IStateBinding
         float[] x_array = input_string_1.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
         float[] y_array = input_string_2.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
 
-        List<Vector2> temp_list = new List<Vector2> { };
+        List<Vector2> temp_list = new() { };
         foreach (var element in x_array.Zip(y_array, (x, y) => new { x = x, y = y }))
         {
             temp_list.Add(new Vector2(element.x, element.y));

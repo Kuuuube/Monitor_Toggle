@@ -14,9 +14,12 @@ public sealed class MonitorToggle : MonitorToggleBase
 
     private ITabletReport AbsoluteMode(ITabletReport report)
     {
-        if (MonitorToggleBinding.IsActive)
+        if (MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive)
         {
-            report.Position = FromUnitScreen(ToUnitScreen(report.Position + MonitorToggleBinding.offset, MonitorToggleBinding.offset) * MonitorToggleBinding.multiplier, MonitorToggleBinding.offset);
+            var offset = GetOffset();
+            var multiplier = GetMultiplier();
+
+            report.Position = FromUnitScreen(ToUnitScreen(report.Position + offset, offset) * multiplier, offset);
         }
         return report;
     }
@@ -26,23 +29,39 @@ public sealed class MonitorToggle : MonitorToggleBase
 
     private ITabletReport RelativeMode(ITabletReport report)
     {
-        if (currentOffset != MonitorToggleBinding.offset && MonitorToggleBinding.IsActive)
+        var offset = GetOffset();
+        var multiplier = GetMultiplier();
+        if (currentOffset != offset && (MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive))
         {
-            report.Position += MonitorToggleBinding.offset - currentOffset;
-            currentOffset = MonitorToggleBinding.offset;
+            report.Position += offset - currentOffset;
+            currentOffset = offset;
         }
-        else if (MonitorToggleBinding.IsActive != lastIsActive)
+        else if ((MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive) != lastIsActive)
         {
             report.Position -= currentOffset;
             currentOffset = new Vector2();
         }
-        lastIsActive = MonitorToggleBinding.IsActive;
+        lastIsActive = MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive;
 
-        if (MonitorToggleBinding.IsActive)
+        if (MonitorToggleBinding.IsActive || MonitorToggleBindingAuto.IsActive)
         {
-            report.Position *= MonitorToggleBinding.multiplier;
+            report.Position *= multiplier;
         }
         return report;
+    }
+
+    private Vector2 GetOffset()
+    {
+        if (MonitorToggleBinding.IsActive) return MonitorToggleBinding.offset;
+        if (MonitorToggleBindingAuto.IsActive) return MonitorToggleBindingAuto.offset;
+        return new();
+    }
+
+    private Vector2 GetMultiplier()
+    {
+        if (MonitorToggleBinding.IsActive) return MonitorToggleBinding.multiplier;
+        if (MonitorToggleBindingAuto.IsActive) return MonitorToggleBindingAuto.multiplier;
+        return new();
     }
 
     public override void Consume(IDeviceReport value)

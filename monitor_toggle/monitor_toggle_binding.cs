@@ -17,8 +17,8 @@ public sealed class monitor_toggle_binding : IStateBinding
     internal static Vector2 multiplier = new Vector2(1, 1);
 
     int array_index = -1; //temp start value
-    internal static Vector2[] offset_array = new Vector2[] {};
-    internal static Vector2[] multiplier_array = new Vector2[] {};
+    internal static Vector2[] offset_array = new Vector2[] { };
+    internal static Vector2[] multiplier_array = new Vector2[] { };
 
     public static string[] valid_modes => new[] { "Toggle", "Hold", "Cycle" };
 
@@ -48,25 +48,33 @@ public sealed class monitor_toggle_binding : IStateBinding
             "In relative mode, the multiplier to increase the Y sensitivity by.")]
     public string height_multiplier { set; get; }
 
-    public void Press(TabletReference tablet, IDeviceReport report) {
+    public void Press(TabletReference tablet, IDeviceReport report)
+    {
         Vector2[] new_offset_array;
         Vector2[] new_multiplier_array;
 
-        try {
+        try
+        {
             new_offset_array = to_vector2_array(offset_x, offset_y);
             new_multiplier_array = to_vector2_array(width_multiplier, height_multiplier);
-        } catch (Exception exception) {
+        }
+        catch (Exception exception)
+        {
             Log.Exception(exception);
             Log.WriteNotify("Monitor Toggle", "Error parsing binding settings. Offset X: " + offset_x + ", Offset Y: " + offset_y + ", Width Multiplier: " + width_multiplier + ", Height Multiplier: " + height_multiplier, LogLevel.Error);
             return;
         }
 
-        if (!new_offset_array.SequenceEqual(offset_array) || !new_multiplier_array.SequenceEqual(multiplier_array) || mode == "Cycle") {
+        if (!new_offset_array.SequenceEqual(offset_array) || !new_multiplier_array.SequenceEqual(multiplier_array) || mode == "Cycle")
+        {
             offset_array = new_offset_array;
             multiplier_array = new_multiplier_array;
-            if (array_index + 1 >= offset_array.Length || array_index + 1 >= multiplier_array.Length || array_index == -1) {
+            if (array_index + 1 >= offset_array.Length || array_index + 1 >= multiplier_array.Length || array_index == -1)
+            {
                 array_index = 0;
-            } else if (mode == "Cycle") {
+            }
+            else if (mode == "Cycle")
+            {
                 array_index += 1;
             }
             offset = offset_array[array_index];
@@ -76,27 +84,34 @@ public sealed class monitor_toggle_binding : IStateBinding
             return;
         }
 
-        if (mode == "Toggle") {
+        if (mode == "Toggle")
+        {
             is_active = !is_active;
-        } else if (mode == "Hold") {
+        }
+        else if (mode == "Hold")
+        {
             is_active = true;
         }
     }
 
-    private Vector2[] to_vector2_array(string input_string_1, string input_string_2) {
+    private Vector2[] to_vector2_array(string input_string_1, string input_string_2)
+    {
         // `CultureInfo.InvariantCulture` MUST be included to ensure decimal separators are parsed with `.` instead of `,`
         float[] x_array = input_string_1.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
         float[] y_array = input_string_2.Split(',').Select(str => float.Parse(str.Trim(), CultureInfo.InvariantCulture)).ToArray();
 
-        List<Vector2> temp_list = new List<Vector2> {};
-        foreach (var element in x_array.Zip(y_array, (x, y) => new {x = x, y = y})) {
+        List<Vector2> temp_list = new List<Vector2> { };
+        foreach (var element in x_array.Zip(y_array, (x, y) => new { x = x, y = y }))
+        {
             temp_list.Add(new Vector2(element.x, element.y));
         }
         return temp_list.ToArray();
     }
 
-    public void Release(TabletReference tablet, IDeviceReport report) {
-        if (mode == "Hold") {
+    public void Release(TabletReference tablet, IDeviceReport report)
+    {
+        if (mode == "Hold")
+        {
             is_active = false;
         }
     }

@@ -8,9 +8,11 @@ using System.Linq;
 using System.Numerics;
 
 namespace monitor_toggle;
+
 public abstract class monitor_toggle_base : IPositionedPipelineElement<IDeviceReport>
 {
-    public OutputModeType get_output_mode() {
+    public OutputModeType get_output_mode()
+    {
         try_resolve_output_mode();
         return output_mode_type;
     }
@@ -66,12 +68,14 @@ public abstract class monitor_toggle_base : IPositionedPipelineElement<IDeviceRe
                 .Where(dev => dev?.OutputMode?.Elements?.Contains(this) ?? false)
                 .Select(dev => dev?.OutputMode).FirstOrDefault();
 
-            if (output is AbsoluteOutputMode abs_output) {
+            if (output is AbsoluteOutputMode abs_output)
+            {
                 absolute_output_mode = abs_output;
                 output_mode_type = OutputModeType.absolute;
                 return;
             }
-            if (output is RelativeOutputMode rel_output) {
+            if (output is RelativeOutputMode rel_output)
+            {
                 relative_output_mode = rel_output;
                 output_mode_type = OutputModeType.relative;
                 return;
@@ -85,7 +89,8 @@ public abstract class monitor_toggle_base : IPositionedPipelineElement<IDeviceRe
     public abstract PipelinePosition Position { get; }
 }
 
-public enum OutputModeType {
+public enum OutputModeType
+{
     absolute,
     relative,
     unknown

@@ -81,7 +81,7 @@ public sealed class MonitorToggleBindingSimple : IStateBinding
         List<TargetDisplay> tempList = new() { };
         foreach (var element in indexesArray)
         {
-            var targetDisplay = displays?.First((x) => x.Index == int.Parse(element));
+            var targetDisplay = displays?.First((x) => x.Index == int.Parse(element.Trim()));
             if (targetDisplay != null)
             {
                 tempList.Add(new TargetDisplay

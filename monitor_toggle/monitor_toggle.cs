@@ -3,7 +3,6 @@ using OpenTabletDriver.Plugin.Tablet;
 using OpenTabletDriver.Plugin.Output;
 using System;
 using System.Numerics;
-using OpenTabletDriver.Plugin;
 
 namespace monitor_toggle;
 
@@ -53,14 +52,28 @@ public sealed class MonitorToggle : MonitorToggleBase
     private Vector2 GetOffset()
     {
         if (MonitorToggleBinding.IsActive) return MonitorToggleBinding.offset;
-        if (MonitorToggleBindingSimple.IsActive) return MonitorToggleBindingSimple.offset;
+        if (MonitorToggleBindingSimple.IsActive)
+        {
+            var currentOffsets = GetCurrentDisplayOffsets();
+            return new Vector2(
+                currentOffsets.X - MonitorToggleBindingSimple.TargetDisplayInfo.X,
+                currentOffsets.Y - MonitorToggleBindingSimple.TargetDisplayInfo.Y
+            );
+        }
         return new();
     }
 
     private Vector2 GetMultiplier()
     {
         if (MonitorToggleBinding.IsActive) return MonitorToggleBinding.multiplier;
-        if (MonitorToggleBindingSimple.IsActive) return MonitorToggleBindingSimple.multiplier;
+        if (MonitorToggleBindingSimple.IsActive)
+        {
+            var currentSize = GetCurrentDisplaySize();
+            return new Vector2(
+                MonitorToggleBindingSimple.TargetDisplayInfo.Width / currentSize.X,
+                MonitorToggleBindingSimple.TargetDisplayInfo.Height / currentSize.Y
+            );
+        }
         return new();
     }
 

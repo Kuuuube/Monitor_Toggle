@@ -2,7 +2,6 @@
 using OpenTabletDriver.Plugin;
 using OpenTabletDriver.Plugin.DependencyInjection;
 using OpenTabletDriver.Plugin.Output;
-using OpenTabletDriver.Plugin.Platform.Display;
 using OpenTabletDriver.Plugin.Tablet;
 using System;
 using System.Linq;
@@ -48,6 +47,28 @@ public abstract class MonitorToggleBase : IPositionedPipelineElement<IDeviceRepo
         return default;
     }
 
+    public Vector2 GetCurrentDisplayOffsets()
+    {
+        if (outputModeType == OutputModeType.absolute && absoluteOutputMode != null)
+        {
+            return absoluteOutputMode.Output.Position;
+        }
+
+        TryResolveOutputMode();
+        return default;
+    }
+
+    public Vector2 GetCurrentDisplaySize()
+    {
+        if (outputModeType == OutputModeType.absolute && absoluteOutputMode != null)
+        {
+            return new Vector2(absoluteOutputMode.Output.Width, absoluteOutputMode.Output.Height);
+        }
+
+        TryResolveOutputMode();
+        return default;
+    }
+
     protected static Vector2 clamp(Vector2 input)
     {
         return new Vector2(
@@ -55,9 +76,6 @@ public abstract class MonitorToggleBase : IPositionedPipelineElement<IDeviceRepo
             Math.Clamp(input.Y, -1, 1)
         );
     }
-
-    [Resolved]
-    public IVirtualScreen? VirtualScreen { set; get; }
 
     [Resolved]
     public IDriver? driver;

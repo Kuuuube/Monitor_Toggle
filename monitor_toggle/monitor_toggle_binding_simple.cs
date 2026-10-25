@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenTabletDriver.Plugin;
@@ -13,6 +14,8 @@ public sealed class MonitorToggleBindingSimple : IStateBinding
 {
     internal static bool IsActive { set; get; }
     internal static TargetDisplay activeTargetDisplay = new();
+
+    int arrayIndex = -1; //temp start value
     private TargetDisplay[] targetDisplaysArray = new TargetDisplay[] { };
 
     public static string[] ValidModes => new[] { "Toggle", "Hold", "Cycle" };
@@ -25,19 +28,40 @@ public sealed class MonitorToggleBindingSimple : IStateBinding
             "Specify multiple settings for cycle mode by separating them with a comma.")]
     public string? Mode { set; get; }
 
-    [Property("Display Index"), DefaultPropertyValue("0"), ToolTip("The display index (or indexes) to map to.")]
+    [Property("Display Indexes"), DefaultPropertyValue("0"), ToolTip("The display index (or indexes) to map to.")]
     public string? DisplayIndexes { set; get; }
 
     public void Press(TabletReference tablet, IDeviceReport report)
     {
         var displays = _virtualScreen?.Displays.ToArray();
-        if (displays != null && DisplayIndexes != null)
+        TargetDisplay[] newTargetDisplaysArray = new TargetDisplay[] { };
+
+        try
         {
-            targetDisplaysArray = ToTargetDisplayArray(DisplayIndexes, displays);
-            if (targetDisplaysArray.Length > 0)
+            newTargetDisplaysArray = ToTargetDisplayArray(DisplayIndexes!, displays!);
+        }
+        catch (Exception exception)
+        {
+            Log.Exception(exception);
+            Log.WriteNotify("Monitor Toggle", "Error parsing binding settings. DisplayIndexes: " + DisplayIndexes, LogLevel.Error);
+            return;
+        }
+
+        if (!newTargetDisplaysArray.SequenceEqual(targetDisplaysArray) || Mode == "Cycle")
+        {
+            targetDisplaysArray = newTargetDisplaysArray;
+            if (arrayIndex + 1 >= targetDisplaysArray.Length || arrayIndex == -1)
             {
-                activeTargetDisplay = targetDisplaysArray[0];
+                arrayIndex = 0;
             }
+            else if (Mode == "Cycle")
+            {
+                arrayIndex += 1;
+            }
+            activeTargetDisplay = newTargetDisplaysArray[arrayIndex];
+
+            IsActive = true;
+            return;
         }
 
         if (Mode == "Toggle")

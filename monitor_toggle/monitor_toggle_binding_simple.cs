@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using OpenTabletDriver.Plugin;
 using OpenTabletDriver.Plugin.Attributes;
@@ -11,7 +12,8 @@ namespace monitor_toggle;
 public sealed class MonitorToggleBindingSimple : IStateBinding
 {
     internal static bool IsActive { set; get; }
-    internal static TargetDisplay TargetDisplayInfo = new();
+    internal static TargetDisplay activeTargetDisplay = new();
+    private TargetDisplay[] targetDisplaysArray = new TargetDisplay[] { };
 
     public static string[] ValidModes => new[] { "Toggle", "Hold", "Cycle" };
 
@@ -23,23 +25,19 @@ public sealed class MonitorToggleBindingSimple : IStateBinding
             "Specify multiple settings for cycle mode by separating them with a comma.")]
     public string? Mode { set; get; }
 
-    [Property("Display Index"), DefaultPropertyValue("0"), ToolTip("The display index to map to.")]
-    public string? DisplayIndex { set; get; }
+    [Property("Display Index"), DefaultPropertyValue("0"), ToolTip("The display index (or indexes) to map to.")]
+    public string? DisplayIndexes { set; get; }
 
     public void Press(TabletReference tablet, IDeviceReport report)
     {
         var displays = _virtualScreen?.Displays.ToArray();
-        var targetDisplay = displays?.First((x) => x.Index.ToString() == DisplayIndex);
-        if (targetDisplay != null)
+        if (displays != null && DisplayIndexes != null)
         {
-            TargetDisplayInfo = new TargetDisplay
+            targetDisplaysArray = ToTargetDisplayArray(DisplayIndexes, displays);
+            if (targetDisplaysArray.Length > 0)
             {
-                Width = targetDisplay.Width,
-                Height = targetDisplay.Height,
-                // Offsets are based on the top left corner by default (to see this: right click the Display area -> hover `Set to display`)
-                CenterOffsetX = targetDisplay.Position.X + targetDisplay.Width / 2,
-                CenterOffsetY = targetDisplay.Position.Y + targetDisplay.Height / 2
-            };
+                activeTargetDisplay = targetDisplaysArray[0];
+            }
         }
 
         if (Mode == "Toggle")
@@ -50,6 +48,29 @@ public sealed class MonitorToggleBindingSimple : IStateBinding
         {
             IsActive = true;
         }
+    }
+
+    private TargetDisplay[] ToTargetDisplayArray(string displayIndexes, IDisplay[] displays)
+    {
+        string[] indexesArray = displayIndexes.Split(',').ToArray();
+
+        List<TargetDisplay> tempList = new() { };
+        foreach (var element in indexesArray)
+        {
+            var targetDisplay = displays?.First((x) => x.Index == int.Parse(element));
+            if (targetDisplay != null)
+            {
+                tempList.Add(new TargetDisplay
+                {
+                    Width = targetDisplay.Width,
+                    Height = targetDisplay.Height,
+                    // Offsets are based on the top left corner by default (to see this: right click the Display area -> hover `Set to display`)
+                    CenterOffsetX = targetDisplay.Position.X + targetDisplay.Width / 2,
+                    CenterOffsetY = targetDisplay.Position.Y + targetDisplay.Height / 2
+                });
+            }
+        }
+        return tempList.ToArray();
     }
 
     public void Release(TabletReference tablet, IDeviceReport report)

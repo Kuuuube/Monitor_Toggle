@@ -56,8 +56,8 @@ public sealed class MonitorToggle : MonitorToggleBase
         {
             var currentOffsets = GetCurrentDisplayOffsets();
             return new Vector2(
-                MonitorToggleBindingSimple.TargetDisplayInfo.CenterOffsetX - currentOffsets.X,
-                MonitorToggleBindingSimple.TargetDisplayInfo.CenterOffsetY - currentOffsets.Y
+                MonitorToggleBindingSimple.activeTargetDisplay.CenterOffsetX - currentOffsets.X,
+                MonitorToggleBindingSimple.activeTargetDisplay.CenterOffsetY - currentOffsets.Y
             );
         }
         return new();
@@ -70,8 +70,8 @@ public sealed class MonitorToggle : MonitorToggleBase
         {
             var currentSize = GetCurrentDisplaySize();
             return new Vector2(
-                MonitorToggleBindingSimple.TargetDisplayInfo.Width / currentSize.X,
-                MonitorToggleBindingSimple.TargetDisplayInfo.Height / currentSize.Y
+                MonitorToggleBindingSimple.activeTargetDisplay.Width / currentSize.X,
+                MonitorToggleBindingSimple.activeTargetDisplay.Height / currentSize.Y
             );
         }
         return new();

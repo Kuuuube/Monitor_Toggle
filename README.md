@@ -12,6 +12,8 @@ Bindings for switching between monitors.
 
 ## Monitor Toggle Simple Binding Settings
 
+Automatically mapped monitor toggle based off display indexes. Does not work in relative output modes.
+
 **Mode:** The monitor switching mode to use. Toggle, Hold, or Cycle.
 
 Toggle activates when the binding is pressed and deactivates when the binding is pressed a second time.
@@ -25,6 +27,8 @@ Cycle activates when the binding is pressed and always stays active. When the bi
 To view the indexes of your displays, go to OTD's `Output` tab, right click the `Display` area, and hover over `Set to display`. The first display listed is display `0` (it may be a virtual display), then display `1`, display `2`, and so on.
 
 ## Monitor Toggle Binding Settings
+
+Manually mapped monitor toggle with customizeable multipliers and offsets. Works in all output modes.
 
 > [!WARNING]
 > When specifying decimal values, only use `.` as a separator. Do not use `,`. (`0.1`, `1.7`, `123.123`, etc)

@@ -36,8 +36,9 @@ public sealed class MonitorToggleBindingSimple : IStateBinding
             {
                 Width = targetDisplay.Width,
                 Height = targetDisplay.Height,
-                X = targetDisplay.Position.X,
-                Y = targetDisplay.Position.Y
+                // Offsets are based on the top left corner by default (to see this: right click the Display area -> hover `Set to display`)
+                CenterOffsetX = targetDisplay.Position.X + targetDisplay.Width / 2,
+                CenterOffsetY = targetDisplay.Position.Y + targetDisplay.Height / 2
             };
         }
 
@@ -71,7 +72,7 @@ public sealed class MonitorToggleBindingSimple : IStateBinding
     {
         public float Width { get; set; }
         public float Height { get; set; }
-        public float X { get; set; }
-        public float Y { get; set; }
+        public float CenterOffsetX { get; set; }
+        public float CenterOffsetY { get; set; }
     }
 }

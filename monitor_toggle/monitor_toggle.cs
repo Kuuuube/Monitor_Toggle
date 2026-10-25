@@ -56,8 +56,8 @@ public sealed class MonitorToggle : MonitorToggleBase
         {
             var currentOffsets = GetCurrentDisplayOffsets();
             return new Vector2(
-                currentOffsets.X - MonitorToggleBindingSimple.TargetDisplayInfo.X,
-                currentOffsets.Y - MonitorToggleBindingSimple.TargetDisplayInfo.Y
+                MonitorToggleBindingSimple.TargetDisplayInfo.CenterOffsetX - currentOffsets.X,
+                MonitorToggleBindingSimple.TargetDisplayInfo.CenterOffsetY - currentOffsets.Y
             );
         }
         return new();

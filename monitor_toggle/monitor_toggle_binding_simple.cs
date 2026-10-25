@@ -34,8 +34,7 @@ public sealed class MonitorToggleBindingSimple : IStateBinding
     public void Press(TabletReference tablet, IDeviceReport report)
     {
         var displays = _virtualScreen?.Displays.ToArray();
-        TargetDisplay[] newTargetDisplaysArray = new TargetDisplay[] { };
-
+        TargetDisplay[] newTargetDisplaysArray;
         try
         {
             newTargetDisplaysArray = ToTargetDisplayArray(DisplayIndexes!, displays!);
